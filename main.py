@@ -47,8 +47,6 @@ def scrape_data(ticker):
         data = requests.get(
             f"https://cdn.cboe.com/api/global/delayed_quotes/options/{ticker}.json"
         )
-        with open(f"data/{ticker}.json", "w") as f:
-            json.dump(data.json(), f)
     # Convert json to pandas DataFrame
     data = pd.DataFrame.from_dict(data.json())
 
