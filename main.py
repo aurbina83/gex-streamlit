@@ -39,13 +39,13 @@ def scrape_data(ticker):
     try:
         data = requests.get(
             f"https://cdn.cboe.com/api/global/delayed_quotes/options/_{ticker}.json"
-        )
+        ).json()
     except ValueError:
         data = requests.get(
             f"https://cdn.cboe.com/api/global/delayed_quotes/options/{ticker}.json"
-        )
+        ).json()
     # Convert json to pandas DataFrame
-    data = pd.DataFrame.from_dict(data.json())
+    data = pd.DataFrame.from_dict(data)
 
     spot_price = data.loc["current_price", "data"]
     option_data = pd.DataFrame(data.loc["options", "data"])
