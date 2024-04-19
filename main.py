@@ -36,34 +36,21 @@ st.markdown(
 
 def scrape_data(ticker):
     """Scrape data from CBOE website"""
-    data = None
-    # check if data folder exists
-    if "data" not in os.listdir():
-        os.mkdir("data")
-    # Check if data is already downloaded
-    if f"{ticker}.json" in os.listdir("data"):
-        f = open(f"data/{ticker}.json")
-        data = pd.DataFrame.from_dict(json.load(f))
-        timestamp = datetime.fromtimestamp(data["timestamp"])
-        # if timestamp is older than 1 day, request new data
-        data = None if (datetime.now() - timestamp).days > 1 else data
-    if not data:
-        # Request data and save it to file
-        try:
-            data = requests.get(
-                f"https://cdn.cboe.com/api/global/delayed_quotes/options/_{ticker}.json"
-            )
-            with open(f"data/{ticker}.json", "w") as f:
-                json.dump(data.json(), f)
+    try:
+        data = requests.get(
+            f"https://cdn.cboe.com/api/global/delayed_quotes/options/_{ticker}.json"
+        )
+        with open(f"data/{ticker}.json", "w") as f:
+            json.dump(data.json(), f)
 
-        except ValueError:
-            data = requests.get(
-                f"https://cdn.cboe.com/api/global/delayed_quotes/options/{ticker}.json"
-            )
-            with open(f"data/{ticker}.json", "w") as f:
-                json.dump(data.json(), f)
-        # Convert json to pandas DataFrame
-        data = pd.DataFrame.from_dict(data.json())
+    except ValueError:
+        data = requests.get(
+            f"https://cdn.cboe.com/api/global/delayed_quotes/options/{ticker}.json"
+        )
+        with open(f"data/{ticker}.json", "w") as f:
+            json.dump(data.json(), f)
+    # Convert json to pandas DataFrame
+    data = pd.DataFrame.from_dict(data.json())
 
     spot_price = data.loc["current_price", "data"]
     option_data = pd.DataFrame(data.loc["options", "data"])
