@@ -40,9 +40,6 @@ def scrape_data(ticker):
         data = requests.get(
             f"https://cdn.cboe.com/api/global/delayed_quotes/options/_{ticker}.json"
         )
-        with open(f"data/{ticker}.json", "w") as f:
-            json.dump(data.json(), f)
-
     except ValueError:
         data = requests.get(
             f"https://cdn.cboe.com/api/global/delayed_quotes/options/{ticker}.json"
