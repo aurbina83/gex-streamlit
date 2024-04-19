@@ -13,6 +13,7 @@ for param in ["figure.facecolor", "axes.facecolor", "savefig.facecolor"]:
     plt.rcParams[param] = "#212946"
 for param in ["text.color", "axes.labelcolor", "xtick.color", "ytick.color"]:
     plt.rcParams[param] = "0.9"
+plt.rcParams["font.size"] = 6
 
 contract_size = 100
 
@@ -86,19 +87,27 @@ def compute_gex_by_strike(spot, data, ticker):
     limit_criteria = (gex_by_strike.index > spot * 0.85) & (
         gex_by_strike.index < spot * 1.15
     )
+    limited_gex = gex_by_strike[limit_criteria]
 
     # Create a plot
     fig, ax = plt.subplots()
     ax.bar(
-        gex_by_strike[limit_criteria].index,
-        gex_by_strike[limit_criteria],
+        limited_gex.index,
+        limited_gex,
         color="#FE53BB",
         alpha=0.5,
     )
     ax.grid(color="#2A3459")
-    ax.set_xlabel("Strike", fontweight="heavy")
+    ax.set_xlabel("Strike", fontweight="light")
     ax.set_ylabel("Gamma Exposure (Bn$)", fontweight="heavy")
     ax.set_title(f"{ticker} GEX by Strike", fontweight="heavy")
+
+    # Set x-axis ticks and labels
+    # Display every 5th label
+    ticks = limited_gex.index[::5]
+    ax.set_xticks(ticks)
+    ax.set_xticklabels(ticks, rotation="vertical", fontsize=5)  # Adjust fontsize here
+
     st.pyplot(fig)  # Streamlit function to display the figure
 
 
