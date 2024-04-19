@@ -36,11 +36,18 @@ st.markdown(
 
 def scrape_data(ticker):
     """Scrape data from CBOE website"""
+    data = None
+    # check if data folder exists
+    if "data" not in os.listdir():
+        os.mkdir("data")
     # Check if data is already downloaded
     if f"{ticker}.json" in os.listdir("data"):
         f = open(f"data/{ticker}.json")
         data = pd.DataFrame.from_dict(json.load(f))
-    else:
+        timestamp = datetime.fromtimestamp(data["timestamp"])
+        # if timestamp is older than 1 day, request new data
+        data = None if (datetime.now() - timestamp).days > 1 else data
+    if not data:
         # Request data and save it to file
         try:
             data = requests.get(
