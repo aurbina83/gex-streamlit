@@ -160,7 +160,7 @@ def print_gex_surface(spot, data, ticker):
 
 def main():
     st.title("Gamma Exposure by Strike and Expiration")
-    ticker = st.text_input("Enter the Ticker Symbol", "AAPL").upper()
+    ticker = st.text_input("Enter the Ticker Symbol", "SPY").upper()
 
     col1, col2 = st.columns(2)
     with col1:
